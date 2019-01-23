@@ -1,0 +1,1438 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>vdRay</name>
+    </assembly>
+    <members>
+        <member name="T:vdRay.vdRayComponent">
+            <summary>
+            The main class of the vdRay component that stores all the properties and calls the necessary methods in order to create photorealistic bitmaps.
+            </summary>
+        </member>
+        <member name="M:vdRay.vdRayComponent.getSaveVideoFileDialog(System.String)">
+            <summary>
+            Shows the standard windows SaveDialog.
+            </summary>
+            <param name="defaultVideoFileName">The default filename of the dialog.</param>
+            <returns>The filename the user selected.</returns>
+        </member>
+        <member name="M:vdRay.vdRayComponent.createVideo(System.String,vdRay.vdPointViews,System.Boolean)">
+            <summary>
+            Creates a walkthrough vdVideo using the vdRay component.
+            </summary>
+            <param name="filename">The filename of the vdVideo that will be created.</param>
+            <param name="pointViews">The collection of objects defining position, twist and direction of the camera on every step.</param>
+            <param name="testVideo">Set true if to create a test video using OpenGL.</param>
+            <returns>True if the creation of the video is completed successfully, false if it is unterrupted.</returns>
+            <remarks>Creation of a video can be a very time consuming procedure, use the test video to preview the result before creating a vdray video.
+            Vdray videos have a frame rate of 25 frames per second, while test videos a frame rate of 10.</remarks>
+        </member>
+        <member name="M:vdRay.vdRayComponent.OpenVideo(System.IO.Stream)">
+            <summary>
+            Opens a VdVideo object.
+            </summary>
+            <param name="stream">The stream from wich the VdVideo will be opened.</param>
+            <returns>The VdVideo object opened.</returns>
+            <example>
+            <para>Open a vdVideo file.</para>
+            <code>
+                        OpenFileDialog ofd = new OpenFileDialog();
+                            if (ofd.ShowDialog() == DialogResult.OK)
+                            {
+                                Stream stream = File.Open(ofd.FileName, FileMode.Open);
+                                vdRay.VdVideo video = vdray.OpenVideo(stream);
+                                video.getFrame(7);
+                            }
+                    *
+            </code>
+            </example>
+        </member>
+        <member name="M:vdRay.vdRayComponent.OpenVideo(System.String)">
+            <summary>
+            Opens a VdVideo object.
+            </summary>
+            <param name="videoFileName">The filename of the VdVideo to be opened.</param>
+            <returns>The VdVideo object opened.</returns>
+            <example>
+            <para>Open a vdVideo file.</para>
+            <code>
+                        OpenFileDialog ofd = new OpenFileDialog();
+                            if (ofd.ShowDialog() == DialogResult.OK)
+                            {
+                                vdRay.VdVideo video = vdray.OpenVideo(ofd.FileName);
+                                video.getFrame(7);
+                            }
+                    *
+            </code>
+            </example>
+        </member>
+        <member name="M:vdRay.vdRayComponent.PlayVideo(vdRay.VdVideo,System.Int32)">
+            <summary>
+            Displays the frames of the selected VdVideo object with the set framerate. If framerate is set to -1, default 
+            framerate will be used instead. The frames will be displayed in the control.
+            </summary>
+            <param name="Video">The VdVideo to be played.</param>
+            <param name="frameRate">The amount of frames to be displayed per second. </param>
+        </member>
+        <member name="F:vdRay.vdRayComponent.components">
+            <summary> 
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:vdRay.vdRayComponent.Dispose(System.Boolean)">
+            <summary> 
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:vdRay.vdRayComponent.InitializeComponent">
+            <summary> 
+            Required method for Designer support - do not modify 
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="M:vdRay.vdRayComponent.#ctor">
+            <summary>
+            The consructor of the Class.
+            </summary>
+        </member>
+        <member name="M:vdRay.vdRayComponent.OnResize(System.EventArgs)">
+            <summary>
+            Fired every time the component is resized.
+            </summary>
+            <param name="e">The parameters of the event fired.</param>
+        </member>
+        <member name="M:vdRay.vdRayComponent.OnLoad(System.EventArgs)">
+            <summary>
+            Fired every time the component is loaded.
+            </summary>
+            <param name="e">The parameters of the event fired.</param>
+        </member>
+        <member name="M:vdRay.vdRayComponent.OnPaint(System.Windows.Forms.PaintEventArgs)">
+            <summary>
+            Fired every time the component is painted.
+            </summary>
+            <param name="e">The parameters of the event fired.</param>
+        </member>
+        <member name="M:vdRay.vdRayComponent.GetImageName(System.Int32)">
+            <summary>
+            Return the temporary image path using a number to add in the filename.
+            </summary>
+            <param name="imageNumber"></param>
+            <returns></returns>
+        </member>
+        <member name="M:vdRay.vdRayComponent.Stop">
+            <summary>
+            Cancels the rendering procedure.
+            </summary>
+        </member>
+        <member name="M:vdRay.vdRayComponent.Play">
+            <summary>
+            Resumes the rendering procedure if it's paused.
+            </summary>
+        </member>
+        <member name="M:vdRay.vdRayComponent.Pause">
+            <summary>
+            Pauses the rendering procedure.
+            </summary>
+        </member>
+        <member name="M:vdRay.vdRayComponent.Regen">
+            <summary>
+            Clears the primitve collection of the component, forcing it to re-export them. Used whenever there was a change in the document being rendered.
+            </summary>
+            <remarks>Regen is automatically called if AutoRegen property is set to true.</remarks>
+        </member>
+        <member name="M:vdRay.vdRayComponent.RenderDocumentModel(System.Object)">
+            <summary>
+            Renders the document set in the vdRayComponent using the view properties set by the document (viewAngle, focalLenght etc.).
+            </summary>
+            <param name="inputParams">Currently you can only pass null as parameter.</param>
+            <returns>The rendered bitmap as object</returns>
+            <example>
+            <para>Rendering and saving an image.</para>
+            <code>
+                        vdRayComponent1.Document = vdFramedControl1.BaseControl.ActiveDocument;
+                        vdRayComponent1.RenderWidth = vdRayComponent1.Width;
+                        vdRayComponent1.RenderHeight = vdRayComponent1.Height;
+                        //You can also use the AutoFitBitmap property in order to use the component's Width and Height as RenderWidth and RenderHeight.
+                        Bitmap bmp = vdRayComponent1.RenderDocumentModel(null) as Bitmap;
+                        bmp.Save("image.bmp");
+            </code>
+            </example>
+        </member>
+        <member name="M:vdRay.vdRayComponent.RenderOrthographic(vdRay.vdPointView,System.Double)">
+            <summary>
+            Renders the document set in the vdRayComponent in orthrographic mode. 
+            </summary>
+            <param name="pointview">The vdPointView object defining the view properties (viewAngle, focalLenght etc.).</param>
+            <param name="ViewSize">The desired ViewSize.</param>
+            <returns>The rendered bitmap as object</returns>
+            <example>
+            <para>Rendering and saving an image.</para>
+            <code>
+                        vdRayComponent1.Document = vdFramedControl1.BaseControl.ActiveDocument;
+                        vdRayComponent1.RenderWidth = vdRayComponent1.Width;
+                        vdRayComponent1.RenderHeight = vdRayComponent1.Height;
+                        //You can also use the AutoFitBitmap property in order to use the component's Width and Height as RenderWidth and RenderHeight.
+                        vdRay.vdPointView pointView = new vdRay.vdPointView(new VectorDraw.Geometry.gPoint(0, 0, 0), new VectorDraw.Geometry.Vector(0, 1, 0));
+                        Bitmap bmp = vdRayComponent1.RenderOrthographic(pointView, vdFramedControl1.BaseControl.ActiveDocument.ViewSize) as Bitmap;
+                        bmp.Save("image.bmp");
+            </code>
+            </example>
+        </member>
+        <member name="M:vdRay.vdRayComponent.Render(vdRay.vdPointView)">
+            <summary>
+            Renders the passed vdDocument using the vdRay Engine.
+            </summary>
+            <param name="pointview">The vdPointView object that defines the Position, direction, twist, etc., of the camera.</param>
+            <returns>The rendered bitmap as object.</returns>
+            <example>
+            <para>Rendering and saving an image.</para>
+            <code>
+                        vdRayComponent1.Document = vdFramedControl1.BaseControl.ActiveDocument;
+                        vdRayComponent1.RenderWidth = vdRayComponent1.Width;
+                        vdRayComponent1.RenderHeight = vdRayComponent1.Height;
+                        //You can also use the AutoFitBitmap property in order to use the component's Width and Height as RenderWidth and RenderHeight.
+                        vdRay.vdPointView pointView = new vdRay.vdPointView(new VectorDraw.Geometry.gPoint(0, 0, 0), new VectorDraw.Geometry.Vector(0, 1, 0));
+                        Bitmap bmp = vdRayComponent1.Render(pointView) as Bitmap;
+                        bmp.Save("image.bmp");
+            </code>
+            </example>
+        </member>
+        <member name="M:vdRay.vdRayComponent.RaiseOnNextFrame(System.Drawing.Bitmap,System.Int32,System.Int32)">
+            <summary>
+            returns False if the cancel parameter of <see cref="T:vdRay.vdRayComponent.RefreshFrameParams"/> during <see cref="E:vdRay.vdRayComponent.OnNextFrame"/> event  was set to false.
+            </summary>
+        </member>
+        <member name="E:vdRay.vdRayComponent.OnNextFrame">
+            <summary>
+            Fired every time a new bitmap is rendered when creating a video.
+            </summary>
+        </member>
+        <member name="E:vdRay.vdRayComponent.OnError">
+            <summary>
+            Fired whenever an error occurs during the rendering.
+            </summary>
+        </member>
+        <member name="E:vdRay.vdRayComponent.OnProgress">
+            <summary>
+            Fired whenever progress is made in every of the stages of the rendering.
+            </summary>
+        </member>
+        <member name="E:vdRay.vdRayComponent.OnProgressStart">
+            <summary>
+            Fired when the Progress meter is initialized.
+            </summary>
+        </member>
+        <member name="E:vdRay.vdRayComponent.OnProgressStop">
+            <summary>
+            Fired when the Progress meter is terminated.
+            </summary>
+        </member>
+        <member name="E:vdRay.vdRayComponent.OnRefresh">
+            <summary>
+            Fired every time the bitmap of the rendered image is refreshed.
+            </summary>
+        </member>
+        <member name="P:vdRay.vdRayComponent.ResourcesDllName">
+            <summary>
+            The name of the DLL that contains the edited dialogs of the document.
+            </summary>
+        </member>
+        <member name="P:vdRay.vdRayComponent.Document">
+            <summary>
+            The vdDocument that will be rendered to Bitmap.
+            </summary>
+        </member>
+        <member name="P:vdRay.vdRayComponent.RenderWidth">
+            <summary>
+            Width of Bitmap that will be created.
+            </summary>
+        </member>
+        <member name="P:vdRay.vdRayComponent.RenderHeight">
+            <summary>
+            Height of Bitmap that will be created.
+            </summary>
+        </member>
+        <member name="P:vdRay.vdRayComponent.AutoFitBitmap">
+            <summary>
+            If true, the component's Width and Height will be used as RenderWidht and RenderHeight.
+            </summary>
+        </member>
+        <member name="P:vdRay.vdRayComponent.CurrentImage">
+            <summary>
+            The Bitmap last rendered with the vdRayComponent.
+            </summary>
+        </member>
+        <member name="P:vdRay.vdRayComponent.Antialiasing">
+            <summary>
+            Whether or not the render will use an Antialiasing algorithm.
+            </summary>
+        </member>
+        <member name="P:vdRay.vdRayComponent.AntialiasDepth">
+            <summary>
+            The depth of the Antialiasing of the object.
+            </summary>
+        </member>
+        <member name="P:vdRay.vdRayComponent.AntialiasThreshold">
+            <summary>
+            The Threshold (limit) of the Antialiasing.
+            </summary>
+        </member>
+        <member name="P:vdRay.vdRayComponent.KeepFiles">
+             <summary>
+             Whether or not, the temporary files used for the rendering will be deleted.
+             </summary>
+            <remarks>Default value is false.</remarks>
+        </member>
+        <member name="P:vdRay.vdRayComponent.RenderFlags">
+            <summary>
+            The flags defining if Text and Lines will be included in the rendering.
+            </summary>
+        </member>
+        <member name="P:vdRay.vdRayComponent.FocalLength">
+            <summary>
+            The focal length used by the camera in the rendering procedure.
+            </summary>
+        </member>
+        <member name="P:vdRay.vdRayComponent.LensAngle">
+            <summary>
+            The lens' angle used by the camera in the rendering procedure. 
+            </summary>
+        </member>
+        <member name="P:vdRay.vdRayComponent.AutoRegen">
+            <summary>
+            If true, the Regen method is called automatically whenever needed.
+            </summary>
+        </member>
+        <member name="P:vdRay.vdRayComponent.FreezeEvents">
+            <summary>
+            If true, no Event is fired.
+            </summary>
+        </member>
+        <member name="P:vdRay.vdRayComponent.FreezeRefreshEvents">
+            <summary>
+            If true, no refresh Event is fired.
+            </summary>
+        </member>
+        <member name="P:vdRay.vdRayComponent.Radiosity">
+            <summary>
+            Controls the use of Radiosity. 
+            Radiosity is an algorithm that simulates the natural light when illuminating the objects
+            of a scene, creating more realistic images. What Radiosity does is taking into consideration
+            all of the neighbor objects' lighting amount when calculating how bright or dark a specific
+            object will be. Thus said, it's understandable that Radiosity is a quite heavy algorithm that 
+            can take many minutes or even hours to render a mid sized bitmap. Radiosity has many properties
+            that affect the quality and time consumption. The benefit of this technique is a big improvement
+            in terms of photorealism, since the output picture can be very realistic. A side benefit is that 
+            the ambient light of all the objects of the scene don't have to be set (optional), saving time 
+            out of constant testing. By default UseRadiosity property of Radiosity is set to false.
+            </summary>
+        </member>
+        <member name="P:vdRay.vdRayComponent.SkyImage">
+            <summary>
+            SkyImage is a bitmap property used as background for your scene, when rendering with vdRay. The 
+            bitmap you set, will be applied around the center of your scene, containing
+            every entity in your document. How the image will be set, depends on what you set at the 
+            SkyImageTypeEnum property.
+            </summary>
+        </member>
+        <member name="P:vdRay.vdRayComponent.SkyImageType">
+            <summary>
+            SkyImageType defines the way the bitmap set as SkyImage will be wrapped.
+            </summary>
+        </member>
+        <member name="P:vdRay.vdRayComponent.SkyTwist">
+            <summary>
+            SkyImage will be rotated as many degrees as are set in SkyTwist having as rotation axis the SkyFront Vector property.
+            </summary>
+        </member>
+        <member name="P:vdRay.vdRayComponent.SkyFront">
+            <summary>
+            SkyFront defines the front center of SkyImage. If, for example you set a bitmap with a red dot at the center of the bitmap,
+            when applied on the sky, this dot will be located at where this vector instructs in WCS coordinations. Keep in mind that
+            this applies only to the SphericalSingle property of SkyImageTypeEnum.
+            </summary>
+        </member>
+        <member name="T:vdRay.vdRayComponent.RefreshFrameParams">
+            <summary>
+            The parameters passed every time a refresh event is fired.
+            </summary>
+        </member>
+        <member name="P:vdRay.vdRayComponent.RefreshFrameParams.Cancel">
+            <summary>
+            If set to true, cancels the execution of the event.
+            </summary>
+        </member>
+        <member name="P:vdRay.vdRayComponent.RefreshFrameParams.CurrentFrame">
+            <summary>
+            The bitmap created by the rendering procedure.
+            </summary>
+        </member>
+        <member name="P:vdRay.vdRayComponent.RefreshFrameParams.CurrentFrameIndex">
+            <summary>
+            The index of the bitmap created when creating a video.
+            </summary>
+        </member>
+        <member name="P:vdRay.vdRayComponent.RefreshFrameParams.TotalFrames">
+            <summary>
+            The total amount of bitmaps to be rendered when creating a video.
+            </summary>
+        </member>
+        <member name="T:vdRay.vdRayComponent.NextFrame">
+            <summary>
+            Represents a method that handles the OnNextFrame event.
+            </summary>
+            <param name="sender"></param>
+            <param name="frameparams"></param>
+        </member>
+        <member name="T:vdRay.vdRayComponent.RenderFlagsEnum">
+            <summary>
+            The various flags of the rendering.
+            </summary>
+        </member>
+        <member name="F:vdRay.vdRayComponent.RenderFlagsEnum.None">
+            <summary>
+            Nore strings, neither lines will be drawn in the rendered image.
+            </summary>
+        </member>
+        <member name="F:vdRay.vdRayComponent.RenderFlagsEnum.DrawStrings">
+            <summary>
+            Strings will be drawn in the rendered image.
+            </summary>
+        </member>
+        <member name="F:vdRay.vdRayComponent.RenderFlagsEnum.DrawLines">
+            <summary>
+            Lines will be drawn in the rendered image.
+            </summary>
+        </member>
+        <member name="F:vdRay.vdRayComponent.RenderFlagsEnum.DrawAll">
+            <summary>
+            Both strings and lines will be drawn in the rendered image.
+            </summary>
+        </member>
+        <member name="T:vdRay.vdRayComponent.SkyImageTypeEnum">
+            <summary>
+            The types of how the image applies as sky for the scene.
+            </summary>
+        </member>
+        <member name="F:vdRay.vdRayComponent.SkyImageTypeEnum.SphericalSingle">
+            <summary>
+            The whole bitmap is wrapped around the user's scene.
+            </summary>
+        </member>
+        <member name="F:vdRay.vdRayComponent.SkyImageTypeEnum.SphericalTiles">
+            <summary>
+            The bitmap is applied as sky, depending on the size of the bitmap it will be repeated, until it is fully wrapped around the user's scene.
+            </summary>
+        </member>
+        <member name="T:vdRay.vdRayComponent.RefreshDelegate">
+            <summary>
+            Represents a method that handles the OnRefresh event.
+            </summary>
+            <param name="sender">The vdRay object that caused the event to fire.</param>
+            <param name="parameters">The parameters passed on every event fired.</param>
+        </member>
+        <member name="T:vdRay.vdRayComponent.ProgressEventHandler">
+            <summary>
+            Represents a method that handles the OnProgress event.
+            </summary>
+            <param name="sender">The vdRay object that caused the event to fire.</param>
+            <param name="percent">The percentage of the rendering so far.</param>
+            <param name="jobDescription">What function of the rendering is being executed at the moment.</param>
+        </member>
+        <member name="T:vdRay.vdRayComponent.ProgressStartEventHandler">
+            <summary>
+            Represents a method that handles the OnProgressStart event.
+            </summary>
+            <param name="sender">The vdRay object that caused the event to fire.</param>
+            <param name="jobDescription">What function of the rendering will begin executing.</param>
+            <param name="meterLimit">The maximum value of the meter.</param>
+        </member>
+        <member name="T:vdRay.vdRayComponent.ProgressStopEventHandler">
+            <summary>
+            Represents a method that handles the OnProgressStop event.
+            </summary>
+            <param name="sender">The vdRay object that caused the event to fire.</param>
+            <param name="jobDescription">What function of the rendering was being executed.</param>
+        </member>
+        <member name="T:vdRay.vdPointView">
+            <summary>
+            Represents the camera position, direction and twist angle when rendering an image or creating a video.
+            </summary>
+        </member>
+        <member name="M:vdRay.vdPointView.#ctor">
+            <summary>
+            Initializes a new instance of the vdPointView class.
+            </summary>
+        </member>
+        <member name="M:vdRay.vdPointView.#ctor(VectorDraw.Geometry.gPoint,VectorDraw.Geometry.Vector)">
+            <summary>
+            Initializes a new instance of the vdPointView class.
+            </summary>
+            <param name="cameraposition">The position of the camera.</param>
+            <param name="targetDirection">The direction, the camera will face.</param>
+        </member>
+        <member name="M:vdRay.vdPointView.#ctor(VectorDraw.Geometry.gPoint,VectorDraw.Geometry.gPoint)">
+            <summary>
+            Initializes a new instance of the vdPointView class.
+            </summary>
+            <param name="cameraposition">The position of the camera.</param>
+            <param name="targetPosition">The point, the camera will look towards.</param>
+        </member>
+        <member name="P:vdRay.vdPointView.CameraPosition">
+            <summary>
+            The position of the camera. 
+            </summary>
+        </member>
+        <member name="P:vdRay.vdPointView.TargetDirection">
+            <summary>
+            The direction, the camera will face.
+            </summary>
+        </member>
+        <member name="P:vdRay.vdPointView.TwistAngle">
+            <summary>
+            The angle that the camera is twisted.
+            </summary>
+        </member>
+        <member name="T:vdRay.vdPointViews">
+            <summary>
+            An vdArray of vdPointVies objects.
+            </summary>
+        </member>
+        <member name="M:vdRay.vdPointViews.#ctor">
+            <summary>
+            Initializes a new instance of the vdPointViews class.
+            </summary>
+        </member>
+        <member name="M:vdRay.vdPointViews.#ctor(vdRay.vdPointView[])">
+            <summary>
+            Initializes a new instance of the vdPointViews class.
+            </summary>
+            <param name="items">An array of vdPointView objects to be added in the new vdPointViews instance.</param>
+        </member>
+        <member name="M:vdRay.vdPointViews.#ctor(VectorDraw.Geometry.gPoint[])">
+            <summary>
+            Initializes a new instance of the vdPointViews class.
+            </summary>
+            <param name="items">An array of gPoint objects to be added in the new vdPointViews instance. Direction of the each vdPointView will be set the direction between the current
+            and the next gPoint.</param>
+        </member>
+        <member name="M:vdRay.vdPointViews.AddItem(vdRay.vdPointView)">
+            <summary>
+            Adds a new vdPointView item in the array.
+            </summary>
+            <param name="item">The vdPointView item to be added.</param>
+        </member>
+        <member name="M:vdRay.vdPointViews.GetEnumerator">
+            <summary>
+            Returns the Enumerator of the vdArray of the object.
+            </summary>
+            <returns>The Enumerator of the vdArray of the object</returns>
+        </member>
+        <member name="M:vdRay.vdPointViews.RemoveAll">
+            <summary>
+            Clears the vdPointViews array of all its items.
+            </summary>
+        </member>
+        <member name="M:vdRay.vdPointViews.InsertAt(System.Int32,vdRay.vdPointView)">
+            <summary>
+            Inserts an item at the specified index.
+            </summary>
+            <param name="index">The position where the item will be inserted.</param>
+            <param name="item">The item to be inserted in the vdArray.</param>
+            <exception cref="T:System.ArgumentOutOfRangeException">If the index is less than 0 or bigger or equal to <see cref="P:vdRay.vdPointViews.Count"/> property.</exception>
+            <remarks>Every object after the index position are shifted.</remarks>
+        </member>
+        <member name="M:vdRay.vdPointViews.RemoveAt(System.Int32)">
+            <summary>
+            Removes the item at the specified index.
+            </summary>
+            <param name="index">The position from which the item will be removed.</param>
+        </member>
+        <member name="P:vdRay.vdPointViews.Last">
+            <summary>
+            The last item in the array.
+            </summary>
+        </member>
+        <member name="P:vdRay.vdPointViews.Count">
+            <summary>
+            The ammount of vdPointView items in the Array.
+            </summary>
+        </member>
+        <member name="P:vdRay.vdPointViews.Item(System.Int32)">
+            <summary>
+            The vdPointView item in the specified position.
+            </summary>
+            <param name="index"></param>
+            <returns></returns>
+        </member>
+        <member name="T:vdRay.Dialogs.FrmMaterials">
+            <summary>
+            The dialog used to preview and edit the Material Properties of an object.
+            </summary>
+        </member>
+        <member name="M:vdRay.Dialogs.FrmMaterials.#ctor">
+            <summary>
+            Initializes a new instance of the FrmMaterials class.
+            </summary>
+        </member>
+        <member name="M:vdRay.Dialogs.FrmMaterials.Show(System.Windows.Forms.IWin32Window)">
+             <summary>
+             Show displays the material properties dialog. This dialog is used to preview and edit the Material Properties of an object.
+             </summary>
+             <param name="owner">The owner of the dialog.</param>
+             <returns>The vdColor the user has selected.</returns>
+             <remarks>When ok is pressed a vdColor with the properties specified is returned. When cancel is pressed, null is returned. In case you 
+             define a material image, make sure to add the picBoxMaterialImage in the images collection of the Document, as described in the code sample.</remarks>
+             <code>
+            VectorDraw.Professional.vdCollections.vdSelection sel = new VectorDraw.Professional.vdCollections.vdSelection();
+            sel = doc.GetGripSelection();
+            if (sel.Count > 0)
+            {
+                sel[0].PenColor = FrmMaterials.Show();
+                if (sel[0].PenColor.MaterialImage != null)
+                    sel[0].Document.Images.AddItem(sel[0].PenColor.MaterialImage);
+            }
+             </code>
+        </member>
+        <member name="M:vdRay.Dialogs.FrmMaterials.Show(VectorDraw.Professional.vdObjects.vdColor,System.Boolean,System.Windows.Forms.IWin32Window)">
+            <summary>
+            Show displays the material properties dialog. This dialog is used to preview and edit the Material Properties of an object.
+            </summary>
+            <param name="color">The vdColor used as the initial color in the dialog.</param>
+            <param name="saveImageToDocument">If true, the image used as material image is added to the images collection of the vdColor's document.</param>
+            <param name="owner">The owner of the dialog.</param>
+            <returns>The vdColor the user has selected.</returns>
+            <remarks>When ok is pressed a vdColor with the properties specified is returned. When cancel is pressed, null is returned.</remarks>
+        </member>
+        <member name="M:vdRay.Dialogs.FrmMaterials.Show(VectorDraw.Professional.vdObjects.vdColor,System.Double,System.Boolean,System.Windows.Forms.IWin32Window)">
+            <summary>
+            Show displays the material properties dialog. This dialog is used to preview and edit the Material Properties of an object.
+            </summary>
+            <param name="color">The vdColor used as the initial color in the dialog.</param>
+            <param name="sceneDrawingUnit">The size of the scene's Cube/Sphere/Square dimensions. The default size is 2 (With this parameter you can make the scene similar to your 
+            drawing's size).</param>
+            <param name="saveImageToDocument">If true, the image used as material image is added to the images collection of the vdColor's document.</param>
+            <param name="owner">The owner of the dialog.</param>
+            <returns>The vdColor the user has selected.</returns>
+            <remarks>When ok is pressed a vdColor with the properties specified is returned. When cancel is pressed, null is returned.</remarks>
+        </member>
+        <member name="M:vdRay.Dialogs.FrmMaterials.Show(VectorDraw.Professional.vdPrimaries.vdFigure,System.Boolean,System.Windows.Forms.IWin32Window)">
+            <summary>
+            Show displays the material properties dialog. This dialog is used to preview and edit the Material Properties of an object.
+            </summary>
+            <param name="figure">The VectorDraw object which's color will be used as the initial color in the dialog.</param>
+            <param name="saveImageToDocument">If true, the image used as material image is added to the images collection of the vdColor's document.</param>
+            <param name="owner">The owner of the dialog.</param>
+            <returns>The vdColor the user has selected.</returns>
+            <remarks>When ok is pressed a vdColor with the properties specified is returned. When cancel is pressed, null is returned.</remarks>
+        </member>
+        <member name="M:vdRay.Dialogs.FrmMaterials.Show(VectorDraw.Professional.vdPrimaries.vdFigure,System.Double,System.Boolean,System.Windows.Forms.IWin32Window)">
+            <summary>
+            Show displays the material properties dialog. This dialog is used to preview and edit the Material Properties of an object.
+            </summary>
+            <param name="figure">The VectorDraw object which's color will be used as the initial color in the dialog.</param>
+            <param name="sceneDrawingUnit">The size of the scene's Cube/Sphere/Square dimensions. The default size is 2 (With this parameter you can make the scene similar
+            to your drawing's size).</param>
+            <param name="saveImageToDocument">If true, the image used as material image is added to the images collection of the vdColor's document.</param>
+            <param name="owner">The owner of the dialog.</param>
+            <returns>The vdColor the user has selected.</returns>
+            <remarks>When ok is pressed a vdColor with the properties specified is returned. When cancel is pressed, null is returned.</remarks>
+        </member>
+        <member name="F:vdRay.Dialogs.FrmMaterials.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:vdRay.Dialogs.FrmMaterials.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:vdRay.Dialogs.FrmMaterials.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="F:vdRay.Dialogs.FrmMaterials.sceneImage">
+            <summary>
+            Used for distribution of the forms for globilization.
+            </summary>
+        </member>
+        <member name="F:vdRay.Dialogs.FrmMaterials.cancel">
+            <summary>
+            Used for distribution of the forms for globilization.
+            </summary>
+        </member>
+        <member name="F:vdRay.Dialogs.FrmMaterials.ok">
+            <summary>
+            Used for distribution of the forms for globilization.
+            </summary>
+        </member>
+        <member name="F:vdRay.Dialogs.FrmMaterials.alphaBlendNum">
+            <summary>
+            Used for distribution of the forms for globilization.
+            </summary>
+        </member>
+        <member name="F:vdRay.Dialogs.FrmMaterials.aBlending">
+            <summary>
+            Used for distribution of the forms for globilization.
+            </summary>
+        </member>
+        <member name="F:vdRay.Dialogs.FrmMaterials.ambientNum">
+            <summary>
+            Used for distribution of the forms for globilization.
+            </summary>
+        </member>
+        <member name="F:vdRay.Dialogs.FrmMaterials.diffuseNum">
+            <summary>
+            Used for distribution of the forms for globilization.
+            </summary>
+        </member>
+        <member name="F:vdRay.Dialogs.FrmMaterials.metallicNum">
+            <summary>
+            Used for distribution of the forms for globilization.
+            </summary>
+        </member>
+        <member name="F:vdRay.Dialogs.FrmMaterials.reflectionNum">
+            <summary>
+            Used for distribution of the forms for globilization.
+            </summary>
+        </member>
+        <member name="F:vdRay.Dialogs.FrmMaterials.refractionNum">
+            <summary>
+            Used for distribution of the forms for globilization.
+            </summary>
+        </member>
+        <member name="F:vdRay.Dialogs.FrmMaterials.roughnessNum">
+            <summary>
+            Used for distribution of the forms for globilization.
+            </summary>
+        </member>
+        <member name="F:vdRay.Dialogs.FrmMaterials.specularNum">
+            <summary>
+            Used for distribution of the forms for globilization.
+            </summary>
+        </member>
+        <member name="F:vdRay.Dialogs.FrmMaterials.ambient">
+            <summary>
+            Used for distribution of the forms for globilization.
+            </summary>
+        </member>
+        <member name="F:vdRay.Dialogs.FrmMaterials.diffuse">
+            <summary>
+            Used for distribution of the forms for globilization.
+            </summary>
+        </member>
+        <member name="F:vdRay.Dialogs.FrmMaterials.metallic">
+            <summary>
+            Used for distribution of the forms for globilization.
+            </summary>
+        </member>
+        <member name="F:vdRay.Dialogs.FrmMaterials.reflection">
+            <summary>
+            Used for distribution of the forms for globilization.
+            </summary>
+        </member>
+        <member name="F:vdRay.Dialogs.FrmMaterials.refraction">
+            <summary>
+            Used for distribution of the forms for globilization.
+            </summary>
+        </member>
+        <member name="F:vdRay.Dialogs.FrmMaterials.roughness">
+            <summary>
+            Used for distribution of the forms for globilization.
+            </summary>
+        </member>
+        <member name="F:vdRay.Dialogs.FrmMaterials.specular">
+            <summary>
+            Used for distribution of the forms for globilization.
+            </summary>
+        </member>
+        <member name="F:vdRay.Dialogs.FrmMaterials.colorText">
+            <summary>
+            Used for distribution of the forms for globilization.
+            </summary>
+        </member>
+        <member name="F:vdRay.Dialogs.FrmMaterials.selectImageButton">
+            <summary>
+            Used for distribution of the forms for globilization.
+            </summary>
+        </member>
+        <member name="F:vdRay.Dialogs.FrmMaterials.colorPicture">
+            <summary>
+            Used for distribution of the forms for globilization.
+            </summary>
+        </member>
+        <member name="F:vdRay.Dialogs.FrmMaterials.comboImage">
+            <summary>
+            Used for distribution of the forms for globilization.
+            </summary>
+        </member>
+        <member name="F:vdRay.Dialogs.FrmMaterials.picBoxMaterialImage">
+            <summary>
+            Used for distribution of the forms for globilization.
+            </summary>
+        </member>
+        <member name="F:vdRay.Dialogs.FrmMaterials.colorL">
+            <summary>
+            Used for distribution of the forms for globilization.
+            </summary>
+        </member>
+        <member name="F:vdRay.Dialogs.FrmMaterials.label2">
+            <summary>
+            Used for distribution of the forms for globilization.
+            </summary>
+        </member>
+        <member name="F:vdRay.Dialogs.FrmMaterials.sphereButton">
+            <summary>
+            Used for distribution of the forms for globilization.
+            </summary>
+        </member>
+        <member name="F:vdRay.Dialogs.FrmMaterials.cubeButton">
+            <summary>
+            Used for distribution of the forms for globilization.
+            </summary>
+        </member>
+        <member name="F:vdRay.Dialogs.FrmMaterials.scaleXText">
+            <summary>
+            Used for distribution of the forms for globilization.
+            </summary>
+        </member>
+        <member name="F:vdRay.Dialogs.FrmMaterials.materialsCombo">
+            <summary>
+            Used for distribution of the forms for globilization.
+            </summary>
+        </member>
+        <member name="F:vdRay.Dialogs.FrmMaterials.groupBox1">
+            <summary>
+            Used for distribution of the forms for globilization.
+            </summary>
+        </member>
+        <member name="F:vdRay.Dialogs.FrmMaterials.groupBox2">
+            <summary>
+            Used for distribution of the forms for globilization.
+            </summary>
+        </member>
+        <member name="F:vdRay.Dialogs.FrmMaterials.refresh">
+            <summary>
+            Used for distribution of the forms for globilization.
+            </summary>
+        </member>
+        <member name="F:vdRay.Dialogs.FrmMaterials.label1">
+            <summary>
+            Used for distribution of the forms for globilization.
+            </summary>
+        </member>
+        <member name="F:vdRay.Dialogs.FrmMaterials.squareButton">
+            <summary>
+            Used for distribution of the forms for globilization.
+            </summary>
+        </member>
+        <member name="F:vdRay.Dialogs.FrmMaterials.toolTip1">
+            <summary>
+            Used for distribution of the forms for globilization.
+            </summary>
+        </member>
+        <member name="F:vdRay.Dialogs.FrmMaterials.tab">
+            <summary>
+            Used for distribution of the forms for globilization.
+            </summary>
+        </member>
+        <member name="F:vdRay.Dialogs.FrmMaterials.sceneTab">
+            <summary>
+            Used for distribution of the forms for globilization.
+            </summary>
+        </member>
+        <member name="F:vdRay.Dialogs.FrmMaterials.objectTab">
+            <summary>
+            Used for distribution of the forms for globilization.
+            </summary>
+        </member>
+        <member name="F:vdRay.Dialogs.FrmMaterials.objectImage">
+            <summary>
+            Used for distribution of the forms for globilization.
+            </summary>
+        </member>
+        <member name="F:vdRay.Dialogs.FrmMaterials.numUnitScale">
+            <summary>
+            Used for distribution of the forms for globilization.
+            </summary>
+        </member>
+        <member name="F:vdRay.Dialogs.FrmMaterials.label3">
+            <summary>
+            Used for distribution of the forms for globilization.
+            </summary>
+        </member>
+        <member name="F:vdRay.Dialogs.FrmMaterials.label10">
+            <summary>
+            Used for distribution of the forms for globilization.
+            </summary>
+        </member>
+        <member name="F:vdRay.Dialogs.FrmMaterials.label11">
+            <summary>
+            Used for distribution of the forms for globilization.
+            </summary>
+        </member>
+        <member name="F:vdRay.Dialogs.FrmMaterials.label9">
+            <summary>
+            Used for distribution of the forms for globilization.
+            </summary>
+        </member>
+        <member name="F:vdRay.Dialogs.FrmMaterials.label6">
+            <summary>
+            Used for distribution of the forms for globilization.
+            </summary>
+        </member>
+        <member name="F:vdRay.Dialogs.FrmMaterials.label7">
+            <summary>
+            Used for distribution of the forms for globilization.
+            </summary>
+        </member>
+        <member name="F:vdRay.Dialogs.FrmMaterials.label5">
+            <summary>
+            Used for distribution of the forms for globilization.
+            </summary>
+        </member>
+        <member name="F:vdRay.Dialogs.FrmMaterials.label4">
+            <summary>
+            Used for distribution of the forms for globilization.
+            </summary>
+        </member>
+        <member name="F:vdRay.Dialogs.FrmMaterials.label8">
+            <summary>
+            Used for distribution of the forms for globilization.
+            </summary>
+        </member>
+        <member name="F:vdRay.Dialogs.FrmMaterials.scaleYText">
+            <summary>
+            Used for distribution of the forms for globilization.
+            </summary>
+        </member>
+        <member name="F:vdRay.Dialogs.FrmMaterials.rotationCombo">
+            <summary>
+            Used for distribution of the forms for globilization.
+            </summary>
+        </member>
+        <member name="F:vdRay.Dialogs.FrmMaterials.label12">
+            <summary>
+            Used for distribution of the forms for globilization.
+            </summary>
+        </member>
+        <member name="F:vdRay.Dialogs.FrmMaterials.progressBar1">
+            <summary>
+            Used for distribution of the forms for globilization.
+            </summary>
+        </member>
+        <member name="F:vdRay.Dialogs.FrmMaterials.buttonScaleXY">
+            <summary>
+            Used for distribution of the forms for globilization.
+            </summary>
+        </member>
+        <member name="F:vdRay.Dialogs.FrmMaterials.textScaleFactorXY">
+            <summary>
+            Used for distribution of the forms for globilization.
+            </summary>
+        </member>
+        <member name="T:vdRay.vdRayGlobals">
+            <summary>
+            Contains global constant values of the component.
+            </summary>
+        </member>
+        <member name="P:vdRay.vdRayGlobals.ResourcesDllName">
+            <summary>
+            The DLL name from which the component's forms will be loaded.
+            </summary>
+        </member>
+        <member name="T:vdRay.Radiosity">
+            <summary>
+            Radiosity is an algorithm that simulates the natural light when illuminating the objects
+            of a scene, creating more realistic images. What Radiosity does is taking into consideration
+            all of the neighbor objects' lighting amount when calculating how bright or dark a specific
+            object will be. Thus said, it's understandable that Radiosity is a quite heavy algorithm that 
+            can take many minutes or even hours to render a mid sized bitmap. Radiosity has many properties
+            that affect the quality and time consumption. The benefit of this technique is a big improvement
+            in terms of photorealism, since the output picture can be very realistic. A side benefit is that 
+            the ambient light of all the objects of the scene don't have to be set (optional), saving time 
+            out of constant testing.
+            </summary>
+        </member>
+        <member name="M:vdRay.Radiosity.ToString">
+            <summary>
+            
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="P:vdRay.Radiosity.PredefinedQuality">
+            <summary>
+            A collection of predefined setting to use Radiosity easily.
+            </summary>
+        </member>
+        <member name="P:vdRay.Radiosity.adc_bailout">
+            <summary> 		
+            In scenes with many reflective and transparent surfaces, vdRay can get bogged down tracing multiple
+            reflections and refractions that contribute very little to the color of a particular pixel. The program
+            uses a system called Adaptive Depth Control (ADC) to stop computing additional reflected or refracted
+            rays when their contribution is insignificant. You may use the adc_bailout property set to a float value
+            to specify the point at which a ray's contribution is considered insignificant. The default value
+            is 1/255, or approximately 0.0039, since a change smaller than that could not be visible in a 24 bit
+            image. Generally this setting is perfectly adequate and should be left alone.
+            </summary>
+        </member>
+        <member name="P:vdRay.Radiosity.always_sample">
+            <summary>
+            You can force POV-Ray to only use the data from the pretrace step and not gather any new samples during 
+            the final radiosity pass. This may reduce splotchiness. To do this, set always_sample to off 
+            (the default value is on).
+            </summary>
+        </member>
+        <member name="P:vdRay.Radiosity.brightness">
+            <summary>
+            The brightness property specifies a float value that is the degree to which objects are brightened before
+            being returned upwards to the rest of the system. The default value is 1.0. 
+            Brightness should be balanced with your ambient and diffuse values as well as your light_source intensity.
+            Remember that brightness doesn't refer directly to the overall scene brightness, it refers to the
+            radiosity calculation which affects the overall scene brightness. This distinction is important, because
+            we can use it to change the contrast of some indirectly lit areas. 
+            </summary>
+        </member>
+        <member name="P:vdRay.Radiosity.count">
+            <summary>
+            The number of rays sent out whenever a new radiosity value has to be calculated. Count is ont of the main
+            speed/quality factors (higher count values result in higher rendering times). Max value 1600;
+            </summary>
+        </member>
+        <member name="P:vdRay.Radiosity.error_bound">
+            <summary>
+            The error_bound float value is one of the two main speed/quality tuning values (the other is count, the
+            number of rays shot). It is intended to mean the fraction of error tolerated. For example, if it were set
+            to 1 the algorithm would not calculate a new value until the error on the last one was estimated to be 100%.
+            Ignoring the error introduced by rotation for the moment, on flat surfaces this is equal to the fraction of
+            the reuse distance, which in turn is the distance to the closest item hit. If you have an old sample on the
+            floor 10 distance units from a wall, an error bound of 0.5 will get you a new sample at a distance of about
+            5 distance units from the wall. 
+            The default value of 1.8 is good for a smooth general lighting effect, but may render corners or smaller 
+            shadows incorrectly. Using lower values is more accurate, but it will increase the danger of artifacts and
+            therefore require a higher count value. You can use values lower than 0.1 but both render time and memory 
+            use can become extremely high then. 
+            </summary>
+        </member>
+        <member name="P:vdRay.Radiosity.gray_threshold">
+            <summary>
+            Diffusely inter-reflected light is a function of the objects around the point in question. Since this is
+            recursively defined to millions of levels of recursion in any real-life scene, every point is illuminated
+            at least in part by every other part of the scene. Since we cannot afford to compute this, if we only do
+            one bounce, the calculated ambient light is very strongly affected by the colors of the objects near it.
+            This is known as color bleed. The gray_threshold float value desaturates the colored light a little to
+            make your scene more visually correct. A value of 0.6 means to calculate the ambient value as 60% of the
+            equivalent gray value calculated, plus 40% of the actual value calculated. At 0.0, this feature does 
+            nothing. At 1.0, you will get 100% pure white/gray ambient light, with no hue. 
+            </summary>
+        </member>
+        <member name="P:vdRay.Radiosity.low_error_factor">
+            <summary>
+            If you calculate just enough samples, but no more, you will get an image which has slightly blotchy lighting.
+            What you want is just a few extra samples interspersed, so that the blending will be nice and smooth. The
+            solution to this is the mosaic preview, controlled by pretrace: it goes over the image one or more times
+            beforehand, calculating radiosity values. To ensure that you get a few extra samples, the radiosity
+            algorithm lowers the error bound during the initial pass or passes, then sets it back just before the final
+            pass. The low_error_factor is a float tuning value which sets the amount that the error bound is dropped
+            during the preliminary image passes. If the low error factor is 0.8 and the error bound is set to 0.4 it
+            will use an error bound of 0.32 (0.4 × 0.8) during the initial passes and 0.4 on the final pass. The default
+            value for low_error_factor is 0.5. 
+            </summary>
+        </member>
+        <member name="P:vdRay.Radiosity.max_sample">
+            <summary>
+            Sometimes very bright objects can cause problems with splotchiness. The max_sample keyword attempts to 
+            address this. Max_sample takes a float parameter which specifies the brightest that any gathered sample
+            is allowed to be. Any samples brighter than this will have their brightness decreased (without affecting
+            color). Specifying a non-positive value for max_sample will allow samples to have any brightness level. 
+            </summary>
+        </member>
+        <member name="P:vdRay.Radiosity.minimum_reuse">
+            <summary>
+             This is the fraction of the screen width which sets the minimum radius of reuse for each sample point.
+             For example, if the value is 0.02, the radius of maximum reuse for every sample is set to whatever 
+             ground distance corresponds to 2% of the width of the screen.
+            </summary>
+        </member>
+        <member name="P:vdRay.Radiosity.nearest_count">
+            <summary>
+            The nearest_count integer value is the minimum number of old ambient values blended together to create a
+            new interpolated value. The total number blended will vary depending on error_bound. All previous values 
+            that fit within the specified error_bound will be used in the average. The default is 5, and the maximum 
+            is 20. 
+            Raising nearest_count can significantly reduce or smooth out splotchiness, since more nearby values will 
+            be averaged. As always, there is a corresponding speed penalty, but using higher values like 10 or even 20
+            for the final trace may help remove artifacts. Some artifacts can also be removed by adjusting the count
+            parameter. 
+            </summary>
+        </member>
+        <member name="P:vdRay.Radiosity.normal">
+            <summary>
+            Radiosity estimation can be affected by normals. To enable this feature, set normal to on. The default
+            is off. 
+            </summary>
+        </member>
+        <member name="P:vdRay.Radiosity.pretrace_start">
+            <summary>
+            To control the radiosity pre-trace gathering step, use the pretrace_start and pretrace_end properties of 
+            radiosity. Each of these is defined by a float value between 0.0 and 1.0 which specifies the
+            size of the blocks in the mosaic preview as a percentage of the image size. The defaults are 0.08 for
+            pretrace_start and 0.04 for pretrace_end. 
+            These pretrace settings can be used to balance speed against quality. The pretrace parameters help POV-Ray
+            determine where more radiosity samples are needed. For a final high-quality render, it's generally best to
+            keep the pretrace_start setting around the default value, but have a much smaller pretrace_end setting, such
+            as 0.005. 
+            </summary>
+        </member>
+        <member name="P:vdRay.Radiosity.pretrace_end">
+            <summary>
+            To control the radiosity pre-trace gathering step, use the pretrace_start and pretrace_end properties of 
+            radiosity. Each of these is defined by a float value between 0.0 and 1.0 which specifies the
+            size of the blocks in the mosaic preview as a percentage of the image size. The defaults are 0.08 for
+            pretrace_start and 0.04 for pretrace_end. 
+            These pretrace settings can be used to balance speed against quality. The pretrace parameters help POV-Ray
+            determine where more radiosity samples are needed. For a final high-quality render, it's generally best to
+            keep the pretrace_start setting around the default value, but have a much smaller pretrace_end setting, such
+            as 0.005.
+            </summary>
+        </member>
+        <member name="P:vdRay.Radiosity.recursion_limit">
+            <summary>
+            The recursion_limit is an integer value which determines how many recursion levels are used to calculate the
+            diffuse inter-reflection. The default value is 3, the upper limit is 20. 
+            This represents the number of times light bounces off objects before reaching your eye. In the real world,
+            this could be a very high number. In POV-Ray, higher is not always better. Values between 2 and 4 tend to
+            give good results for most scenes. Higher values can have a significant speed penalty. It is recommended that
+            you use the lowest value that gets the look you want in your scene. Note that the number of recursions can
+            affect both the brightness and contrast of your indirectly-lit objects, which means that test tuning with a
+            significantly different recursion level than what you intend to do the final trace with may have unexpected
+            results. 
+            </summary>
+        </member>
+        <member name="P:vdRay.Radiosity.UseRadiosity">
+            <summary>
+            If true, the Radiosity algorithm will be used to calculate the illumination of every object in the scene.
+            </summary>
+        </member>
+        <member name="P:vdRay.Radiosity.UseAmbientLight">
+            <summary>
+            If false, the Ambient value of objects' pencolor will be ignored and the illumination of these objects will
+            be calculated by the Radiosity algorithm.
+            </summary>
+        </member>
+        <member name="T:vdRay.Radiosity.RadiosityPredefined">
+            <summary>
+            Predefined settings for use of Radiosity;
+            </summary>
+        </member>
+        <member name="F:vdRay.Radiosity.RadiosityPredefined.Debug">
+            <summary>
+            Run it fast, don't try to make it look good, make sure that
+            you can actually see where the radiosity boundaries are.
+            </summary>
+        </member>
+        <member name="F:vdRay.Radiosity.RadiosityPredefined.Fast">
+            <summary>
+            Make it look as good as you can, but I'm in a hurry.
+            </summary>
+        </member>
+        <member name="F:vdRay.Radiosity.RadiosityPredefined.Normal">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:vdRay.Radiosity.RadiosityPredefined.TwoBounce">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:vdRay.Radiosity.RadiosityPredefined.Final">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:vdRay.Radiosity.RadiosityPredefined.OutdoorLQ">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:vdRay.Radiosity.RadiosityPredefined.OutdoorHQ">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:vdRay.Radiosity.RadiosityPredefined.OutdoorLight">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:vdRay.Radiosity.RadiosityPredefined.IndoorLQ">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:vdRay.Radiosity.RadiosityPredefined.IndoorHQ">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:vdRay.Radiosity.RadiosityPredefined.Custom">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:vdRay.Radiosity.RadiosityPredefined.Default">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:vdRay.Radiosity.OnOff">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:vdRay.Radiosity.OnOff.on">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:vdRay.Radiosity.OnOff.off">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:vdRay.VdVideo">
+            <summary>
+            The class used to store the bitmaps (frames) created by vdRay, when a video is created.
+            </summary>
+        </member>
+        <member name="M:vdRay.VdVideo.Open(System.IO.Stream)">
+            <summary>
+            Opens a VdVideo object.
+            </summary>
+            <param name="stream">The stream from wich the VdVideo will be opened.</param>
+            <returns>The VdVideo object to be opened.</returns>
+        </member>
+        <member name="M:vdRay.VdVideo.Open(System.String)">
+            <summary>
+            Opens a VdVideo object.
+            </summary>
+            <param name="videoFileName">The filename of the VdVideo to be opened.</param>
+            <returns>The VdVideo object to be opened.</returns>
+            <example>
+            <para>Open a vdVideo file.</para>
+            <code>
+                            OpenFileDialog ofd = new OpenFileDialog();
+                            vdRay.VdVideo video;
+                            if (ofd.ShowDialog() == DialogResult.OK)
+                            {
+                                video = vdRay.VdVideo.Open(ofd.FileName);
+                                Bitmap bmp = video.getFrame(7) as Bitmap;
+                            }
+                    *
+            </code>
+             </example>
+        </member>
+        <member name="M:vdRay.VdVideo.getFrame(System.Int32)">
+            <summary>
+            Get the frame of the specified position in the video.
+            </summary>
+            <param name="position">The index of the frame to be returned.</param>a
+            <returns>The bitmap from the specified position.The frame is returned as an object.</returns>
+            <para>Returns the bitmap in the specified index of the video.</para>
+            <example>
+            <code>
+                        OpenFileDialog ofd = new OpenFileDialog();
+                        vdRay.VdVideo video;
+                        if (ofd.ShowDialog() == DialogResult.OK)
+                        {
+                            video = vdRay.VdVideo.Open(ofd.FileName);
+                            Bitmap bmp = video.getFrame(7) as Bitmap;
+                        }
+                        
+                    *
+            </code>
+            </example>
+        </member>
+        <member name="M:vdRay.VdVideo.Dispose">
+            <summary>
+            Disposes the VdVideo.
+            </summary>
+        </member>
+        <member name="P:vdRay.VdVideo.Width">
+            <summary>
+            The width of the bitmaps used in this video.
+            </summary>
+        </member>
+        <member name="P:vdRay.VdVideo.Height">
+            <summary>
+            The height of the bitmaps used in this video.
+            </summary>
+        </member>
+        <member name="P:vdRay.VdVideo.FrameNum">
+            <summary>
+            The total amount of bitmaps this video should contain.
+            </summary>
+        </member>
+        <member name="P:vdRay.VdVideo.FrameRate">
+            <summary>
+            The amount of frames per second this video was designed to display when played.
+            </summary>
+        </member>
+        <member name="M:vdRay.Material.#ctor(System.Drawing.Color)">
+            <summary>
+            Constructs a material
+            </summary>
+            <param name="color">R, G, B and A Varying between [0..255]</param>
+        </member>
+        <member name="M:vdRay.Material.#ctor(System.Drawing.Color,System.Double,System.Double)">
+            <summary>
+            Constructs a material
+            </summary>
+            <param name="color">R, G, B and A Varying between [0..255]</param>
+            <param name="ambient">Varying between [0..1]</param>
+            <param name="diffuse">Varying between [0..1]</param>
+        </member>
+        <member name="M:vdRay.Material.#ctor(System.Drawing.Color,System.Double,System.Double,System.Double,System.Double)">
+            <summary>
+            Constructs a material
+            </summary>
+            <param name="color">R, G, B and A Varying between [0..255]</param>
+            <param name="ambient">Varying between [0..1]</param>
+            <param name="diffuse">Varying between [0..1]</param>
+            <param name="specular">Varying between [0..1]</param>
+            <param name="roughness">Varying between [0..1]</param>
+        </member>
+        <member name="M:vdRay.Material.#ctor(System.Drawing.Color,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double)">
+            <summary>
+            Constructs a material
+            </summary>
+            <param name="color">R, G, B and A Varying between [0..255]</param>
+            <param name="ambient">Varying between [0..1]</param>
+            <param name="diffuse">Varying between [0..1]</param>
+            <param name="specular">Varying between [0..1]</param>
+            <param name="roughness">Varying between [0..1]</param>
+            <param name="Metallic">Varying between [0..1].Set to 1 for metallic surface</param>
+            <param name="reflection">Varying between [0..1]</param>
+        </member>
+        <member name="M:vdRay.Material.#ctor(System.Drawing.Color,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double)">
+            <summary>
+            Constructs a material
+            </summary>
+            <param name="color">R, G, B and A Varying between [0..255]</param>
+            <param name="ambient">Varying between [0..1]</param>
+            <param name="diffuse">Varying between [0..1]</param>
+            <param name="specular">Varying between [0..1]</param>
+            <param name="roughness">Varying between [0..1]</param>
+            <param name="Metallic">Varying between [0..1].Set to 1 for metallic surface</param>
+            <param name="reflection">Varying between [0..1]</param>
+            <param name="refraction">Varying between [1..INFINITY]</param>
+        </member>
+        <member name="M:vdRay.Material.#ctor(System.Drawing.Color,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Boolean,System.String)">
+            <summary>
+            Constructs a material 
+            </summary>
+            <param name="color">R, G, B and A Varying between [0..255]</param>
+            <param name="transparency">>Varying between [0..1]</param>
+            <param name="transmit">Varying between [0..1]</param>
+            <param name="ambient">Varying between [0..1]</param>
+            <param name="diffuse">Varying between [0..1]</param>
+            <param name="specular">Varying between [0..1]</param>
+            <param name="roughness">Varying between [0..1]</param>
+            <param name="Metallic">Varying between [0..1].Set to 1 for metallic surface</param>
+            <param name="reflection">Varying between [0..1]</param>
+            <param name="refraction">Varying between [1..INFINITY]</param>
+            <param name="isImageRepeated">Set to true to repeat the texture</param>
+            <param name="imageFilename">Filename representing the texture file</param>
+        </member>
+        <member name="M:vdRay.Material.GetTypeAndSetMembers(System.Drawing.Color,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double)">
+            <summary>
+            Based on the parameter values this method will return the closiest material type and also sets the members.
+            </summary>
+            <param name="color">R, G, B and A Varying between [0..255]</param>
+            <param name="transparency">R, G, B and A Varying between [0..255]</param>
+            <param name="transmit">Varying between [0..1]</param>
+            <param name="ambient">Varying between [0..1]</param>
+            <param name="diffuse">Varying between [0..1]</param>
+            <param name="specular">Varying between [0..1]</param>
+            <param name="roughness">Varying between [0..1]</param>
+            <param name="Metallic">Varying between [0..1].Set to 1 for metallic surface</param>
+            <param name="reflection">Varying between [0..1]</param>
+            <param name="refraction">Varying between [1..INFINITY]</param>
+            <returns></returns>
+        </member>
+        <member name="M:vdRay.Material.SetTypeAndMembers(vdRay.MaterialType)">
+            <summary>
+            Set the material type and initialise members depending on the type
+            </summary>
+            <param name="type"></param>
+        </member>
+        <member name="T:vdRay.Dialogs.SaveImageDialog">
+            <summary>
+            Contains methods regarding image file save dialogs.
+            </summary>
+        </member>
+        <member name="M:vdRay.Dialogs.SaveImageDialog.GetSaveImageDialog(System.Windows.Forms.Control,VectorDraw.Professional.vdObjects.vdDocument,System.String,System.String@)">
+            <summary>
+            Shows an image file save dialog with all the available image file types.
+            </summary>
+            <param name="control">The parent of the dialog.</param>
+            <param name="document">The active document.</param>
+            <param name="defaultFileName">The default filename that appears in the dialog.</param>
+            <param name="version">Currently not used.</param>
+            <returns>The full path of the selected filename.</returns>
+        </member>
+        <member name="T:vdRay.Properties.Resources">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:vdRay.Properties.Resources.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:vdRay.Properties.Resources.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:vdRay.Properties.Resources.accept">
+            <summary>
+              Looks up a localized resource of type System.Drawing.Bitmap.
+            </summary>
+        </member>
+        <member name="P:vdRay.Properties.Resources.cancel">
+            <summary>
+              Looks up a localized resource of type System.Drawing.Bitmap.
+            </summary>
+        </member>
+        <member name="P:vdRay.Properties.Resources.cube">
+            <summary>
+              Looks up a localized resource of type System.Drawing.Bitmap.
+            </summary>
+        </member>
+        <member name="P:vdRay.Properties.Resources.layer_redraw">
+            <summary>
+              Looks up a localized resource of type System.Drawing.Bitmap.
+            </summary>
+        </member>
+        <member name="P:vdRay.Properties.Resources.sphere">
+            <summary>
+              Looks up a localized resource of type System.Drawing.Bitmap.
+            </summary>
+        </member>
+        <member name="P:vdRay.Properties.Resources.square">
+            <summary>
+              Looks up a localized resource of type System.Drawing.Bitmap.
+            </summary>
+        </member>
+    </members>
+</doc>

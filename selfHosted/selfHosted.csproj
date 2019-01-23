@@ -1,0 +1,268 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{4A4FCFCD-3591-4882-A154-E560A3CDF983}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>selfHosted</RootNamespace>
+    <AssemblyName>selfHosted</AssemblyName>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <PublishUrl>\\terra\tgeo%24\vdf\rest\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Unc</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="AxVDgridLib, Version=7.7016.0.0, Culture=neutral, PublicKeyToken=54eac14e23c9ee53, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>libreriaVdraw\AxVDgridLib.dll</HintPath>
+    </Reference>
+    <Reference Include="AxVDrawLib5, Version=7.7016.0.0, Culture=neutral, PublicKeyToken=54eac14e23c9ee53, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>libreriaVdraw\AxVDrawLib5.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.4.0.0\lib\net451\Microsoft.Owin.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Cors, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.Cors.4.0.0\lib\net451\Microsoft.Owin.Cors.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Diagnostics, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.Diagnostics.4.0.0\lib\net451\Microsoft.Owin.Diagnostics.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Host.HttpListener, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.Host.HttpListener.4.0.0\lib\net451\Microsoft.Owin.Host.HttpListener.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Hosting, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.Hosting.4.0.0\lib\net451\Microsoft.Owin.Hosting.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.12.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="OpenVDF, Version=7.7016.1.0, Culture=neutral, PublicKeyToken=54eac14e23c9ee53, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>libreriaVdraw\OpenVDF.dll</HintPath>
+    </Reference>
+    <Reference Include="Owin, Version=1.0.0.0, Culture=neutral, PublicKeyToken=f0ebd12fd5e55cc5, processorArchitecture=MSIL">
+      <HintPath>..\packages\Owin.1.0\lib\net40\Owin.dll</HintPath>
+    </Reference>
+    <Reference Include="RegAsm, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>libreriaVdraw\RegAsm.exe</HintPath>
+    </Reference>
+    <Reference Include="RenderFormats, Version=7.7016.1.0, Culture=neutral, PublicKeyToken=54eac14e23c9ee53, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>libreriaVdraw\RenderFormats.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Net.Http.Formatting, Version=5.2.7.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.5.2.7\lib\net45\System.Net.Http.Formatting.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Cors, Version=5.2.7.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.Cors.5.2.7\lib\net45\System.Web.Cors.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Http, Version=5.2.7.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.Core.5.2.7\lib\net45\System.Web.Http.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Http.Owin, Version=5.2.7.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.Owin.5.2.7\lib\net45\System.Web.Http.Owin.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+    <Reference Include="vdCommandLine, Version=7.7016.1.0, Culture=neutral, PublicKeyToken=54eac14e23c9ee53, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>libreriaVdraw\vdCommandLine.dll</HintPath>
+    </Reference>
+    <Reference Include="vdDXF, Version=7.7016.1.0, Culture=neutral, PublicKeyToken=54eac14e23c9ee53, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>libreriaVdraw\vdDXF.dll</HintPath>
+    </Reference>
+    <Reference Include="vdFramedControl, Version=7.7016.1.0, Culture=neutral, PublicKeyToken=54eac14e23c9ee53, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>libreriaVdraw\vdFramedControl.dll</HintPath>
+    </Reference>
+    <Reference Include="VDgridLib, Version=7.7016.0.0, Culture=neutral, PublicKeyToken=54eac14e23c9ee53, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+      <HintPath>libreriaVdraw\VDgridLib.dll</HintPath>
+    </Reference>
+    <Reference Include="VdProControl, Version=7.7016.1.0, Culture=neutral, PublicKeyToken=54eac14e23c9ee53, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>libreriaVdraw\VdProControl.dll</HintPath>
+    </Reference>
+    <Reference Include="vdPropertyGrid, Version=7.7016.1.0, Culture=neutral, PublicKeyToken=54eac14e23c9ee53, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>libreriaVdraw\vdPropertyGrid.dll</HintPath>
+    </Reference>
+    <Reference Include="VDrawBaseControl, Version=7.7016.1.0, Culture=neutral, PublicKeyToken=54eac14e23c9ee53, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>libreriaVdraw\VDrawBaseControl.dll</HintPath>
+    </Reference>
+    <Reference Include="VDrawI5, Version=7.7016.0.0, Culture=neutral, PublicKeyToken=54eac14e23c9ee53, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+      <HintPath>libreriaVdraw\VDrawI5.dll</HintPath>
+    </Reference>
+    <Reference Include="VdrawPro5, Version=7.7016.1.0, Culture=neutral, PublicKeyToken=54eac14e23c9ee53, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>libreriaVdraw\VdrawPro5.dll</HintPath>
+    </Reference>
+    <Reference Include="vdScrollableControl, Version=7.7016.1.0, Culture=neutral, PublicKeyToken=54eac14e23c9ee53, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>libreriaVdraw\vdScrollableControl.dll</HintPath>
+    </Reference>
+    <Reference Include="vdxFcnv, Version=7.7016.1.0, Culture=neutral, PublicKeyToken=54eac14e23c9ee53, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>libreriaVdraw\vdxFcnv.dll</HintPath>
+    </Reference>
+    <Reference Include="VectorDraw.Actions, Version=7.7016.1.0, Culture=neutral, PublicKeyToken=54eac14e23c9ee53, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>libreriaVdraw\VectorDraw.Actions.dll</HintPath>
+    </Reference>
+    <Reference Include="VectorDraw.Generics, Version=7.7016.1.0, Culture=neutral, PublicKeyToken=54eac14e23c9ee53, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>libreriaVdraw\VectorDraw.Generics.dll</HintPath>
+    </Reference>
+    <Reference Include="VectorDraw.Geometry, Version=7.7016.1.0, Culture=neutral, PublicKeyToken=54eac14e23c9ee53, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>libreriaVdraw\VectorDraw.Geometry.dll</HintPath>
+    </Reference>
+    <Reference Include="VectorDraw.Professional, Version=7.7016.1.0, Culture=neutral, PublicKeyToken=54eac14e23c9ee53, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>libreriaVdraw\VectorDraw.Professional.dll</HintPath>
+    </Reference>
+    <Reference Include="VectorDraw.Render, Version=7.7016.1.0, Culture=neutral, PublicKeyToken=54eac14e23c9ee53, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>libreriaVdraw\VectorDraw.Render.dll</HintPath>
+    </Reference>
+    <Reference Include="VectorDraw.Serialize, Version=7.7016.1.0, Culture=neutral, PublicKeyToken=54eac14e23c9ee53, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>libreriaVdraw\VectorDraw.Serialize.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="CadController.cs" />
+    <Compile Include="ModeloDatos.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Startup.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <None Include="libreriaVdraw\vdCommandLine.tlb" />
+    <None Include="libreriaVdraw\VdProControl.tlb" />
+    <None Include="libreriaVdraw\vdPropertyGrid.tlb" />
+    <None Include="libreriaVdraw\vdrawi5.tlb" />
+    <None Include="libreriaVdraw\VdrawPro5.tlb" />
+    <None Include="libreriaVdraw\vdRay.tlb" />
+    <None Include="libreriaVdraw\vdScrollableControl.tlb" />
+    <None Include="libreriaVdraw\vdsetup.log" />
+    <None Include="libreriaVdraw\VectorDraw.Actions.tlb" />
+    <None Include="libreriaVdraw\VectorDraw.Geometry.tlb" />
+    <None Include="libreriaVdraw\VectorDraw.Professional.tlb" />
+    <None Include="libreriaVdraw\VectorDraw.Render.tlb" />
+    <None Include="libreriaVdraw\VectorDraw.Serialize.tlb" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="libreriaVdraw\AxVDgridLib.dll" />
+    <Content Include="libreriaVdraw\AxVDrawLib5.dll" />
+    <Content Include="libreriaVdraw\Commands.txt" />
+    <Content Include="libreriaVdraw\Menu.txt" />
+    <Content Include="libreriaVdraw\OpenVDF.dll" />
+    <Content Include="libreriaVdraw\pvengine.dll" />
+    <Content Include="libreriaVdraw\RegAsm.exe" />
+    <Content Include="libreriaVdraw\RenderFormats.dll" />
+    <Content Include="libreriaVdraw\slapi.dll" />
+    <Content Include="libreriaVdraw\vdCommandLine.dll" />
+    <Content Include="libreriaVdraw\vdCommandLine.XML" />
+    <Content Include="libreriaVdraw\vdDXF.dll" />
+    <Content Include="libreriaVdraw\vdfopen.dll" />
+    <Content Include="libreriaVdraw\vdFramedControl.dll" />
+    <Content Include="libreriaVdraw\vdFramedControl.XML" />
+    <Content Include="libreriaVdraw\vdgrid.ocx" />
+    <Content Include="libreriaVdraw\VDgridLib.dll" />
+    <Content Include="libreriaVdraw\VdProControl.dll" />
+    <Content Include="libreriaVdraw\vdPropertyGrid.dll" />
+    <Content Include="libreriaVdraw\vdPropertyGrid.XML" />
+    <Content Include="libreriaVdraw\vdraw.ocx" />
+    <Content Include="libreriaVdraw\VDrawBaseControl.dll" />
+    <Content Include="libreriaVdraw\VDrawBaseControl.XML" />
+    <Content Include="libreriaVdraw\vdrawgl.dll" />
+    <Content Include="libreriaVdraw\VDrawI5.dll" />
+    <Content Include="libreriaVdraw\VDrawLib5.dll" />
+    <Content Include="libreriaVdraw\VdrawPro5.dll" />
+    <Content Include="libreriaVdraw\vdRay.dll" />
+    <Content Include="libreriaVdraw\vdRay.XML" />
+    <Content Include="libreriaVdraw\vdRegTLB.exe" />
+    <Content Include="libreriaVdraw\vdres.txt" />
+    <Content Include="libreriaVdraw\vdScrollableControl.dll" />
+    <Content Include="libreriaVdraw\vdScrollableControl.XML" />
+    <Content Include="libreriaVdraw\vdxFcnv.dll" />
+    <Content Include="libreriaVdraw\VectorDraw.Actions.dll" />
+    <Content Include="libreriaVdraw\VectorDraw.Generics.dll" />
+    <Content Include="libreriaVdraw\VectorDraw.Generics.XML" />
+    <Content Include="libreriaVdraw\VectorDraw.Geometry.dll" />
+    <Content Include="libreriaVdraw\VectorDraw.Geometry.XML" />
+    <Content Include="libreriaVdraw\VectorDraw.Professional.dll" />
+    <Content Include="libreriaVdraw\VectorDraw.Professional.XML" />
+    <Content Include="libreriaVdraw\VectorDraw.Render.dll" />
+    <Content Include="libreriaVdraw\VectorDraw.Render.XML" />
+    <Content Include="libreriaVdraw\VectorDraw.Serialize.dll" />
+    <Content Include="libreriaVdraw\VectorDraw.Serialize.XML" />
+    <Content Include="libreriaVdraw\xFiles.dll" />
+    <Content Include="ReleaseNotes.css" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include=".NETFramework,Version=v4.6.1">
+      <Visible>False</Visible>
+      <ProductName>Microsoft .NET Framework 4.6.1 %28x86 y x64%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>
